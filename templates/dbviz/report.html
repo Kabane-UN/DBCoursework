@@ -1,0 +1,28 @@
+{% extends '../base.html'%}
+
+{% block content %}
+
+<h1>{{ report }}</h1>
+{{report_time}}
+</br>
+<p>Инструменты</p>
+{% for tool in tools %}
+{{tool}}
+<br>
+{% endfor %}
+<p>Количество людей</p>
+{{ report.people_num }}
+<br>
+
+<p>Была использована модель</p>
+
+{{report.model}}
+<br>
+
+<form action="{% url 'report_delete' id=report.report_id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Удалить</button>
+</form>
+</br>
+
+{% endblock %}

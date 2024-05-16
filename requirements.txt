@@ -1,3 +1,13 @@
 Django
 psycopg[binary,pool]
 Pillow
+django-crispy-forms
+crispy-bootstrap4
+djangorestframework
+torch 
+torchvision 
+torchaudio 
+--index-url=https://download.pytorch.org/whl/cpu
+--extra-index-url=https://pypi.org/simple
+django-extensions
+pydotplus

@@ -1,0 +1,12 @@
+{% extends '../base.html'%}
+
+{% block content %}
+{% for model in models %}
+    {{ model }}
+    <form action="{% url 'model_delete' id=model.model_id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
+    </br>
+{% endfor %}
+{% endblock %}

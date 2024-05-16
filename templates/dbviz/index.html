@@ -1,0 +1,39 @@
+{% extends '../base.html'%}
+
+{% block content %}
+<form action="{% url 'employees' %}">
+    <button type="submit">Работники</button>
+</form>
+<form action="{% url 'employee_create' %}">
+    <button type="submit">Добавить работника</button>
+</form>
+<br>
+<form action="{% url 'construction_sites' %}">
+    <button type="submit">Строительные площадки</button>
+</form>
+<form action="{% url 'construction_site_create' %}">
+    <button type="submit">Добавить площадку</button>
+</form>
+<br>
+<form action="{% url 'tasks' %}">
+    <button type="submit">Задания</button>
+</form>
+<form action="{% url 'task_create' %}">
+    <button type="submit">Добавить задание</button>
+</form>
+<br>
+<form action="{% url 'construction_tools' %}">
+    <button type="submit">Строительные инструменты</button>
+</form>
+<form action="{% url 'construction_tools_create' %}">
+    <button type="submit">Добавить строительный инструмент</button>
+</form>
+
+<br>
+<form action="{% url 'models' %}">
+    <button type="submit">Модели</button>
+</form>
+<form action="{% url 'model_create' %}">
+    <button type="submit">Добавить модель</button>
+</form>
+{% endblock %}
