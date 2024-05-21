@@ -1,0 +1,43 @@
+{% extends '../../base.html'%}
+
+{% block content %}
+{% for const_site,  tasks  in const_sites_and_tasks %}
+    <div class="border border-primary rounded">
+        {{ const_site }}
+        <br>
+        Задачи:
+        <div class="d-grid gap-2 d-md-block">
+            <form action="{% url 'task_create' %}" method="get">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Добавить</button>
+            </form>
+            <br>
+          </div>
+        {% for task in tasks %}
+                <div class="border border-secondary rounded" style="padding: 20px; margin-left: 10px; margin-right: 10px;" >
+                    <a href="{% url 'task' id=task.task_id %}">{{ task }}</a>
+                    
+                    </br>
+                </div>
+
+        {% endfor %}
+        <div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+            <form action="{% url 'construction_site_update' id=const_site.const_site_id %}" method="get">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Обновить</button>
+            </form>
+            <form action="{% url 'construction_site_delete' id=const_site.const_site_id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+            <br>
+        </div>
+    </div>
+    
+    
+    </br>
+    
+    
+    </br>
+{% endfor %}
+{% endblock %}

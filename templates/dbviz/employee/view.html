@@ -1,0 +1,27 @@
+{% extends '../../base.html'%}
+
+{% block content %}
+<div class="border border-primary rounded" style="padding: 20px;">
+<h1>{{ employee }}</h1>
+<p>Дни работы</p>
+<div style="overflow: scroll;">
+        {% for day in days %}
+            {{day}}
+            <br>
+        {% endfor %}
+</div>
+
+<div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+    <form action="{% url 'employee_update' id=employee.empl_id  %}" method="get">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Обновить</button>
+    </form>
+    <form action="{% url 'employee_delete' id=employee.empl_id  %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
+    <br>
+</div>
+</div>
+
+{% endblock %}

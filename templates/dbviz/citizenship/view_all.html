@@ -1,0 +1,22 @@
+{% extends '../../base.html'%}
+
+{% block content %}
+
+{% for citizenship in citizenships %}
+    <div class="border border-primary rounded">
+        {{ citizenship }}
+        <div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+            <form action="{% url 'citizenship_update' id=citizenship.citizenship_id %}" method="get">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Обновить</button>
+            </form>
+            <form action="{% url 'citizenship_delete' id=citizenship.citizenship_id %}" method="post">
+                {% csrf_token %}
+                <button type="submit"  class="btn btn-danger">Удалить</button>
+            </form>
+            <br>
+        </div>
+    </div>
+    <br>
+{% endfor %}
+{% endblock %}

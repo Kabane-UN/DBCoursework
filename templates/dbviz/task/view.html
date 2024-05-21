@@ -1,0 +1,44 @@
+{% extends '../../base.html'%}
+
+{% block content %}
+<div class="border border-primary rounded" style="padding: 20px;">
+    <h1>{{ task }}</h1>
+    {{task.description}}
+    </br>
+    Инструменты:
+    <div class="border border-secondary rounded" style="padding: 20px;">
+        {% for tool in tools %}
+            {{tool}}
+            <br>
+        {% endfor %}
+    </div>
+    
+    Работники:
+    <div class="border border-secondary rounded" style="padding: 20px;">
+        {% for employee in employees %}
+            <a href="{% url 'employee' id=employee.empl_id %}">{{employee}}</a>
+            <br>
+        {% endfor %}
+    </div>
+    Отчеты:
+    <div class="border border-secondary rounded" style="padding: 20px;">
+        {% for report in reports %}
+        <a href="{% url 'report' id=report.report_id %}">{{report}}</a>
+        <br>
+        {% endfor %}
+    </div>
+    <div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+        <form action="{% url 'task_update' id=task.task_id %}" method="get">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Обновить</button>
+        </form>
+        <form action="{% url 'task_delete' id=task.task_id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+        <br>
+    </div>
+    </br>
+</div>
+
+{% endblock %}

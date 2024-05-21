@@ -1,0 +1,23 @@
+{% extends '../../base.html'%}
+
+{% block content %}
+{% for employee in employees %}
+    <div class="border border-primary rounded">
+        <a href="{% url 'employee' id=employee.empl_id %}">{{ employee }}</a>
+        <br>
+        {{ employee.post }}
+        <img src="{{ MEDIA_URL }}/{{ employee.photo }}"  width="100" height="100">
+        <div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+            <form action="{% url 'employee_update' id=employee.empl_id %}" method="get">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Обновить</button>
+            </form>
+            <form action="{% url 'employee_delete' id=employee.empl_id %}" method="post">
+                {% csrf_token %}
+                <button type="submit"  class="btn btn-danger">Удалить</button>
+            </form>
+            <br>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}
