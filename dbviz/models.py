@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from coursework.settings import BASE_DIR, MEDIA_ROOT
-from django.db.models.signals import pre_delete, pre_save, post_save
+import django.db.models.signals as signals
 from django.dispatch import receiver
 import os
 
@@ -38,22 +38,6 @@ class Employee(models.Model):
 
     def __str__(self):
         return f"{self.last_name} {self.name}"
-
-
-@receiver(pre_delete, sender=Employee)
-def employee_post_delete_handler(sender, instance, **kwargs):
-    path = os.path.join(MEDIA_ROOT, str(instance.photo.path))
-    if os.path.isfile(path):
-        os.remove(path)
-
-
-@receiver(pre_save, sender=Employee)
-def employee_pre_update_handler(sender, instance, **kwargs):
-    empl = sender.objects.filter(pk=instance.empl_id).first()
-    if empl and instance.photo.path != empl.photo.path:
-        path = os.path.join(MEDIA_ROOT, str(empl.photo.path))
-        if os.path.isfile(path):
-            os.remove(path)
 
 
 class Model(models.Model):
@@ -102,7 +86,7 @@ class Task(models.Model):
     description = models.TextField(max_length=350)
     start_date = models.DateField()
     compl_date = models.DateField()
-    const_site = models.ForeignKey(ConstructionSite, on_delete=models.CASCADE)
+    const_site = models.ForeignKey(ConstructionSite, on_delete=models.DO_NOTHING)
     const_tools = models.ManyToManyField(ConstructionTools, blank=True)
     employee = models.ManyToManyField(Employee)
 
@@ -114,7 +98,7 @@ class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
     original_image = models.ImageField(upload_to="dbviz/report")
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, on_delete=models.DO_NOTHING)
     report_time = models.DateTimeField(auto_now=True)
     people_num = models.IntegerField()
     const_tools = models.ManyToManyField(ConstructionTools)
@@ -123,14 +107,30 @@ class Report(models.Model):
         return f"Отчет №{str(self.report_id)}"
 
 
-@receiver(pre_delete, sender=Model)
+@receiver(signals.post_delete, sender=Employee)
+def employee_post_delete_handler(sender, instance, **kwargs):
+    path = os.path.join(MEDIA_ROOT, str(instance.photo.path))
+    if os.path.isfile(path):
+        os.remove(path)
+
+
+@receiver(signals.pre_save, sender=Employee)
+def employee_pre_update_handler(sender, instance, **kwargs):
+    empl = sender.objects.filter(pk=instance.empl_id).first()
+    if empl and instance.photo.path != empl.photo.path:
+        path = os.path.join(MEDIA_ROOT, str(empl.photo.path))
+        if os.path.isfile(path):
+            os.remove(path)
+
+
+@receiver(signals.post_delete, sender=Model)
 def model_post_delete_handler(sender, instance, **kwargs):
     path = os.path.join(MEDIA_ROOT, str(instance.path.path))
     if os.path.isfile(path):
         os.remove(path)
 
 
-@receiver(pre_save, sender=Model)
+@receiver(signals.pre_save, sender=Model)
 def model_pre_update_handler(sender, instance, **kwargs):
     empl = sender.objects.filter(pk=instance.empl_id).first()
     if empl and instance.path.path != empl.path.path:
@@ -139,7 +139,7 @@ def model_pre_update_handler(sender, instance, **kwargs):
             os.remove(path)
 
 
-@receiver(pre_delete, sender=Report)
+@receiver(signals.post_delete, sender=Report)
 def report_post_delete_handler(sender, instance, **kwargs):
     path = os.path.join(MEDIA_ROOT, str(instance.original_image.path))
     if os.path.isfile(path):

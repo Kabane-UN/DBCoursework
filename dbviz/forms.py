@@ -2,8 +2,8 @@ from django import forms
 from .models import *
 from django.forms import widgets
 
-birth_years = (str(i) for i in range(1900, 2999))
-empl_years = (str(i) for i in range(2024, 2999))
+birth_years = tuple((str(i) for i in range(1900, 2999)))
+empl_years = tuple((str(i) for i in range(2024, 2999)))
 
 
 class EmployeeForm(forms.ModelForm):

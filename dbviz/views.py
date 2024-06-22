@@ -9,15 +9,18 @@ from PIL import Image
 import torch
 import torchvision
 from torchvision import transforms as T
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     if request.method == "GET":
         return render(request, "dbviz/index.html")
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST, request.FILES)
@@ -29,6 +32,7 @@ def employee_create(request):
     return render(request, "dbviz/employee/create.html", {"form": form})
 
 
+@login_required
 def employee_update(request, id):
     empl = Employee.objects.get(pk=id)
     if request.method == "POST":
@@ -42,6 +46,7 @@ def employee_update(request, id):
     return render(request, "dbviz/employee/update.html", {"form": form})
 
 
+@login_required
 def employees(request):
     if request.method == "GET":
         employs = Employee.objects.all()
@@ -53,18 +58,18 @@ def employees(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def employee_delete(request, id):
     if request.method == "POST":
         empl = Employee.objects.get(pk=id)
-        tasks = Task.objects.all()
-        for task in tasks:
-            if empl in task.employee.all():
-                return redirect(request.META.get("HTTP_REFERER"))
+        if Task.objects.filter(employee__pk=id).exists():
+            return redirect(request.META.get("HTTP_REFERER"))
         empl.delete()
         return redirect(request.META.get("HTTP_REFERER"))
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def construction_site_create(request):
     if request.method == "POST":
         form = ConstructionSiteForm(request.POST)
@@ -76,6 +81,7 @@ def construction_site_create(request):
     return render(request, "dbviz/construction_site/create.html", {"form": form})
 
 
+@login_required
 def construction_site_update(request, id):
     construction_site = ConstructionSite.objects.get(const_site_id=id)
     if request.method == "POST":
@@ -89,6 +95,7 @@ def construction_site_update(request, id):
     return render(request, "dbviz/construction_site/update.html", {"form": form})
 
 
+@login_required
 def construction_sites(request):
     if request.method == "GET":
         const_sites = ConstructionSite.objects.all()
@@ -104,6 +111,7 @@ def construction_sites(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def construction_site_delete(request, id):
     if request.method == "POST":
 
@@ -112,6 +120,7 @@ def construction_site_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def construction_tools_create(request):
     if request.method == "POST":
         form = ConstructionToolsForm(request.POST)
@@ -123,6 +132,7 @@ def construction_tools_create(request):
     return render(request, "dbviz/construction_tools/create.html", {"form": form})
 
 
+@login_required
 def construction_tools_update(request, id):
     conts_tools = ConstructionTools.objects.get(const_tools_id=id)
     if request.method == "POST":
@@ -136,6 +146,7 @@ def construction_tools_update(request, id):
     return render(request, "dbviz/construction_tools/update.html", {"form": form})
 
 
+@login_required
 def construction_tools(request):
     if request.method == "GET":
         const_tools = ConstructionTools.objects.all()
@@ -147,18 +158,18 @@ def construction_tools(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def construction_tools_delete(request, id):
     if request.method == "POST":
         tools = ConstructionTools.objects.get(const_tools_id=id)
-        tasks = Task.objects.all()
-        for task in tasks:
-            if tools in task.const_tools.all():
-                return redirect(request.META.get("HTTP_REFERER"))
+        if Task.objects.filter(const_tools__pk=id).exists():
+            return redirect(request.META.get("HTTP_REFERER"))
         tools.delete()
         return redirect(request.META.get("HTTP_REFERER"))
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def task_create(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -170,6 +181,7 @@ def task_create(request):
     return render(request, "dbviz/task/create.html", {"form": form})
 
 
+@login_required
 def task_update(request, id):
     task = Task.objects.get(pk=id)
     if request.method == "POST":
@@ -182,6 +194,7 @@ def task_update(request, id):
     return render(request, "dbviz/task/update.html", {"form": form})
 
 
+@login_required
 def tasks(request):
     if request.method == "GET":
         taskss = Task.objects.all()
@@ -193,6 +206,7 @@ def tasks(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def task_delete(request, id):
     if request.method == "POST":
         Task.objects.filter(pk=id).delete()
@@ -200,6 +214,7 @@ def task_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def model_create(request):
     if request.method == "POST":
         form = ModelForm(request.POST, request.FILES)
@@ -211,6 +226,7 @@ def model_create(request):
     return render(request, "dbviz/model/create.html", {"form": form})
 
 
+@login_required
 def model_update(request, id):
     model = Model.objects.get(pk=id)
     if request.method == "POST":
@@ -224,6 +240,7 @@ def model_update(request, id):
     return render(request, "dbviz/model/update.html", {"form": form})
 
 
+@login_required
 def model_s(request):
     if request.method == "GET":
         modelss = Model.objects.all()
@@ -235,6 +252,7 @@ def model_s(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def model_delete(request, id):
     if request.method == "POST":
         Model.objects.filter(pk=id).delete()
@@ -242,6 +260,7 @@ def model_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def report_delete(request, id):
     if request.method == "POST":
         Report.objects.get(pk=id).delete()
@@ -249,6 +268,7 @@ def report_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def citizenship_create(request):
     if request.method == "POST":
         form = CitizenshipForm(request.POST)
@@ -260,6 +280,7 @@ def citizenship_create(request):
     return render(request, "dbviz/citizenship/create.html", {"form": form})
 
 
+@login_required
 def citizenship_update(request, id):
     citizenship = Citizenship.objects.get(citizenship_id=id)
     if request.method == "POST":
@@ -273,6 +294,7 @@ def citizenship_update(request, id):
     return render(request, "dbviz/citizenship/update.html", {"form": form})
 
 
+@login_required
 def citizenships(request):
     if request.method == "GET":
         citizenships = Citizenship.objects.all()
@@ -284,6 +306,7 @@ def citizenships(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def citizenship_delete(request, id):
     if request.method == "POST":
         citizenship = Citizenship.objects.get(citizenship_id=id)
@@ -294,6 +317,7 @@ def citizenship_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def post_create(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -305,6 +329,7 @@ def post_create(request):
     return render(request, "dbviz/post/create.html", {"form": form})
 
 
+@login_required
 def post_update(request, id):
     post = Post.objects.get(pk=id)
     if request.method == "POST":
@@ -318,6 +343,7 @@ def post_update(request, id):
     return render(request, "dbviz/post/update.html", {"form": form})
 
 
+@login_required
 def posts(request):
     if request.method == "GET":
         posts = Post.objects.all()
@@ -329,6 +355,7 @@ def posts(request):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def post_delete(request, id):
     if request.method == "POST":
         post = Post.objects.get(pk=id)
@@ -340,6 +367,7 @@ def post_delete(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def task_view(request, id):
     if request.method == "GET":
         task = Task.objects.get(pk=id)
@@ -354,6 +382,7 @@ def task_view(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def employee_view(request, id):
     if request.method == "GET":
         empl = Employee.objects.get(pk=id)
@@ -364,6 +393,7 @@ def employee_view(request, id):
     return JsonResponse({"errors": ""}, status=400)
 
 
+@login_required
 def report_view(request, id):
     report = Report.objects.get(report_id=id)
     return render(
@@ -378,6 +408,10 @@ class PostWorkDay(APIView):
         data = request.POST.dict()
         empl_ip = int(data["empl_id"])
         empl = Employee.objects.filter(pk=empl_ip).first()
+        input_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
+        WorkingDay.objects.filter(
+            working_day_date__lte=input_date - timedelta(days=input_date.day)
+        ).delete()
         if not empl:
             return JsonResponse({"errors": "The employee does not exist"}, status=400)
         dates = WorkingDay.objects.filter(working_day_date=data["date"])

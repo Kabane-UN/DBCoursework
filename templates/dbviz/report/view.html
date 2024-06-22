@@ -2,27 +2,29 @@
 
 {% block content %}
 
-<h1>{{ report }}</h1>
-{{report_time}}
-</br>
-<p>Инструменты</p>
-{% for tool in tools %}
-{{tool}}
-<br>
-{% endfor %}
-<p>Количество людей</p>
-{{ report.people_num }}
-<br>
+<div class="border border-primary rounded">
+    <h1>{{ report }}</h1>
+    {{report.report_time}}
+    </br>
+    <div class="d-grid gap-2" style="padding-left: 30px; padding-top: 30px;">
+    <p>Инструменты:
+    {% for tool in tools %}
+        {{tool}}
+    {% endfor %}
+    </p>
+    <p>Количество людей:
+    {{ report.people_num }}
+    </p>
+    <p>Была использована модель: {{report.model}}</p>
+    
+    <br>
 
-<p>Была использована модель</p>
-
-{{report.model}}
-<br>
-
-<form action="{% url 'report_delete' id=report.report_id %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Удалить</button>
-</form>
-</br>
+    <form action="{% url 'report_delete' id=report.report_id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
+    </br>
+    </div>
+</div>
 
 {% endblock %}
